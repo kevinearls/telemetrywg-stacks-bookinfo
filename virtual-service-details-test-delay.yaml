@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: details-delay
+spec:
+  hosts:
+  - details
+  http:
+  - match:
+    - method:
+        exact: "GET"
+    fault:
+      delay:
+        percentage:
+          value: 25.0
+        fixedDelay: 2s
+    route:
+    - destination:
+        host: details
+        subset: v1
+  - route:
+    - destination:
+        host: details
+        subset: v1
