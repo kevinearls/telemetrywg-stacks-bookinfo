@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: traffic-generator
+  labels:
+    app: traffic-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffic-generator
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: traffic-generator
+    spec:
+      containers:
+      - image: kevinearls/test-mesh-traffic-generator:latest
+        name: traffic-generator
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DURATION
+          valueFrom:
+            configMapKeyRef:
+              name: traffic-generator-config
+              key: duration
+        - name: ROUTE
+          valueFrom:
+            configMapKeyRef:
+              name: traffic-generator-config
+              key: route
+        - name: RATE
+          valueFrom:
+            configMapKeyRef:
+              name: traffic-generator-config
+              key: rate
+        - name: SILENT
+          valueFrom:
+            configMapKeyRef:
+              name: traffic-generator-config
+              key: silent
